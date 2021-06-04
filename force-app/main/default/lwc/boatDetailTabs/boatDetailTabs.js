@@ -4,7 +4,7 @@ import BOAT_NAME_FIELD from '@salesforce/schema/Boat__c.Name';
 import { getRecord , getFieldValue } from 'lightning/uiRecordApi';
 import { NavigationMixin } from 'lightning/navigation';
 import { APPLICATION_SCOPE, MessageContext, subscribe } from 'lightning/messageService';
-import BoatMC   from '@salesforce/messageChannel/BoatMessageChannel__c';
+import BOATMC    from '@salesforce/messageChannel/BoatMessageChannel__c';
 
 // Custom Labels Imports
 // import labelDetails for Details
@@ -61,10 +61,11 @@ export default class BoatDetailTabs extends NavigationMixin(LightningElement)  {
 
      // Subscribe to the message channel
   subscribeMC() {
+    if(this.subscription) { return; }
     // local boatId must receive the recordId from the message
     this.subscription = subscribe(
         this.messageContext, 
-        BoatMC, (message) => { this.boatId = message.recordId }, 
+        BOATMC , (message) => { this.boatId = message.recordId }, 
         { scope: APPLICATION_SCOPE });
   }
   
@@ -84,6 +85,7 @@ export default class BoatDetailTabs extends NavigationMixin(LightningElement)  {
   
    // Navigates back to the review list, and refreshes reviews component
    handleReviewCreated() {
+    
     this.template.querySelector('lightning-tabset').activeTabValue ='reviews';
     this.template.querySelector('c-boat-reviews').refresh();
    }
